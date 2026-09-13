@@ -23,7 +23,7 @@ public:
     /* 0x1004 */ char msg3[0x800];
     /* 0x1804 */ char msg4[0x800];
     /* 0x2004 */ fopMsgM_msgDataProc_c mMsgDataProc;
-    /* 0x22A4 */ u8 field_0x22a4[0x22bc - 0x22a4];
+    /* 0x22A4 */ JMSMesgEntry_c field_0x22a4;
     /* 0x22BC */ u8 field_0x22bc;
     /* 0x22BD */ u8 field_0x22bd;
     /* 0x22BE */ u8 field_0x22be;
@@ -40,7 +40,6 @@ public:
     /* 0x22E4 */ u32 field_0x22e4;
     /* 0x22E8 */ u8 field_0x22e8;
     /* 0x22EC */ u32 field_0x22ec;
-    /* 0x22F0 */ u32 field_0x22f0;
 };
 
 class dScnOpen_proc_c : public dDlst_base_c {

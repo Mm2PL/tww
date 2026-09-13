@@ -5,8 +5,11 @@
 
 #include "d/dolzel.h" // IWYU pragma: keep
 #include "JSystem/J2DGraph/J2DPane.h"
+#include "d/d_meter.h"
+#include "d/d_s_name.h"
 #include "d/d_s_open.h"
 #include "d/d_com_inf_game.h"
+#include "dolphin/types.h"
 #include "f_op/f_op_msg_mng.h"
 #include "f_op/f_op_overlap_mng.h"
 #include "JSystem/J2DGraph/J2DOrthoGraph.h"
@@ -14,27 +17,147 @@
 #include "JSystem/J2DGraph/J2DTextBox.h"
 #include "JSystem/JKernel/JKRExpHeap.h"
 #include "JSystem/JUtility/JUTAssert.h"
+#include "global.h"
+#include "m_Do/m_Do_ext.h"
+
+static s8 dScnOpen_message_timer_table[] = {
+    7, 6, 7, 6, 6,
+    7, 9, 8, 9, 6,
+    7, 5, 8, 6, 8,
+    7, 7, 9, 10, 10,
+    7, 7,
+};
 
 /* 80232EFC-8023334C       .text set_message__18dScnOpen_message_cFUli */
-void dScnOpen_message_c::set_message(u32, int) {
-    /* Nonmatching */
+void dScnOpen_message_c::set_message(u32 param_1, int param_2) {
+    /* Matching for GZLE01 */
     JKRHeap* old_heap = mDoExt_setCurrentHeap(exp_heap);
-    if (field_0x22bc != 13 && field_0x22bc != 14) { // fopMsg_MessageStatus_e?
-        mMsgDataProc.stringSet();
+    fopMsgM_msgGet_c msgget;
+    msgget.mMsgIdx = 0;
+    msgget.mGroupID = 0;
+    msgget.mMsgNo = 0;
+    msgget.mResMsgNo = 0;
+
+    this->field_0x22bc = 6;
+    if (param_1 == 0) {
+        this->field_0x22e4 = 4;
+        this->field_0x22c0 = 0x579;
+    } else {
+        this->field_0x22e4 = 0;
+        this->field_0x22c0 = param_1;
     }
+
+    if (param_2 != 0) {
+        this->field_0x22ec = param_2 - 1;
+    }
+    this->field_0x22d8 = 0.0f;
+    this->field_0x22dc = 0;
+    this->field_0x22e0 = dScnOpen_message_timer_table[this->field_0x22c0-0x579] * 0x1e;
+
+    this->field_0x22e8 = 0;
     strcpy(msg1, "");
     strcpy(msg2, "");
     strcpy(msg3, "");
     strcpy(msg4, "");
+    J2DTextBox::TFontSize fsz; 
+    fsz.mSizeX = g_msgHIO.field_0x70;
+    fsz.mSizeY = g_msgHIO.field_0x70;
+
+    this->field_0x22c4->setLineSpace(28.0f);
+    this->field_0x22c8->setLineSpace(28.0f);
+    this->field_0x22c4->setFontSize(fsz);
+    float rubysizex = this->field_0x22c8->mFontSizeX;
+    mesg_header* head_p = msgget.getMesgHeader(this->field_0x22c0);
+    JUT_ASSERT(0x5d, head_p);
+    const char* msg = msgget.getMessage(head_p);
+    this->field_0x22a4 = msgget.getMesgEntry(head_p);
+    mMsgDataProc.dataInit();
+    mMsgDataProc.setBmgData(const_cast<char*>(msg));
+    mMsgDataProc.setOutMessage(msg1, msg2, msg3, msg4);
+    mMsgDataProc.setFont(tFont);
+    mMsgDataProc.setRubyFont(rFont);
+    mMsgDataProc.setCharSpace(this->field_0x22c4->getCharSpace());
+    mMsgDataProc.setRubyCharSpace(this->field_0x22c8->getCharSpace());
+    mMsgDataProc.setLineSpace(this->field_0x22c4->getLineSpace());
+    mMsgDataProc.setMesgEntry(&this->field_0x22a4);
+    mMsgDataProc.setFontSize(fsz.mSizeX);
+    mMsgDataProc.setRubyFontSize(rubysizex);
+    mMsgDataProc.setLineWidth(this->field_0x22c4->mBounds.getWidth());
+    mMsgDataProc.setCenterLineWidth(0x1e6);
+    mMsgDataProc.setSendSpeed(2);
+    mMsgDataProc.setSpaceTimer(0);
+    mMsgDataProc.stringLength();
+    mMsgDataProc.stringShift();
+    s16 lineCount = mMsgDataProc.lineCount;
+    mMsgDataProc.lineCount = 0;
+    f32 yShift = (this->field_0x22a4.field_0x16 - (int)lineCount - 1) * (this->field_0x22c4->getLineSpace()/2.0f);
+    this->field_0x22c4->shiftSet(0.0f, yShift);
+    this->field_0x22c8->shiftSet(0.0f, yShift - 1.0f);
+
     mDoExt_setCurrentHeap(old_heap);
 }
 
 /* 8023334C-80233524       .text exec__18dScnOpen_message_cFv */
 void dScnOpen_message_c::exec() {
-    /* Nonmatching */
-    void* head_p = NULL;
-    JUT_ASSERT(0x5d, head_p);
+    /* Matching for GZLE01 */
+    JKRHeap* old_heap = mDoExt_setCurrentHeap(this->exp_heap);
+    if (this->field_0x22bc != 10 && this->field_0x22bc != 14) {
+        mMsgDataProc.stringSet();
+        this->field_0x22bc = mMsgDataProc.mesgStatus;
+        this->field_0x22c4->setString(this->msg1);
+        this->field_0x22c8->setString(this->msg2);
+        this->field_0x22c8->mVisible = false;
+    }
+    int iVar1 = this->field_0x22e4;
+    switch(iVar1) {
+        case 0:
+            if (this->field_0x22d8 >= 1.0f) {
+                this->field_0x22dc = 0;
+                this->field_0x22e4 = 1;
+                this->field_0x22d8 = 1;
+                break;
+            }
+            this->field_0x22d8 += 0.1f;
+            break;
+        case 1:
+            if ((int)this->field_0x22dc >= (int)this->field_0x22e0) {
+                this->field_0x22dc = 0;
+                this->field_0x22e4 = 2;
+                this->field_0x22d8 = 1.0f;
+                break;
+            } 
+            this->field_0x22dc += 1;
+            break;
+        case 2: 
+            if (this->field_0x22d8 <= 0.0f) {
+                this->field_0x22dc = 0;
+                this->field_0x22d8 = 0.0f;
+                if ((int)this->field_0x22ec == 0) {
+                    this->field_0x22e8 = 1;
+                    this->field_0x22e4 = 4;
+                } else {
+                    this->field_0x22e4 = 3;
+                    this->field_0x22ec -= 1;
+                }
+            } else {
+                this->field_0x22d8 -= 0.1f;
+            }
+            break;
+        case 3:
+            if ((int)this->field_0x22dc >= 45) {
+                set_message(this->field_0x22c0 + 1, 0);
+                this->field_0x22e4 = 0;
+                this->field_0x22dc = 0;
+                break;
+            }
+            this->field_0x22dc += 1;
+            break;
+        case 4:
+            break;
+    }
+    mDoExt_setCurrentHeap(old_heap);
 }
+
 
 /* 80233524-80233620       .text __ct__18dScnOpen_message_cFP10JKRExpHeap */
 dScnOpen_message_c::dScnOpen_message_c(JKRExpHeap* heap) {
