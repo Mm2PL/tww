@@ -23,14 +23,14 @@ public:
     /* 0x1004 */ char msg3[0x800];
     /* 0x1804 */ char msg4[0x800];
     /* 0x2004 */ fopMsgM_msgDataProc_c mMsgDataProc;
-    /* 0x22A4 */ JMSMesgEntry_c field_0x22a4;
+    /* 0x22A4 */ JMSMesgEntry_c mMesgEntry;
     /* 0x22BC */ u8 field_0x22bc;
     /* 0x22BD */ u8 field_0x22bd;
     /* 0x22BE */ u8 field_0x22be;
     /* 0x22BF */ u8 field_0x22bf;
     /* 0x22C0 */ u32 field_0x22c0;
-    /* 0x22C4 */ J2DTextBox* field_0x22c4;
-    /* 0x22C8 */ J2DTextBox* field_0x22c8;
+    /* 0x22C4 */ J2DTextBox* mpTextBox;
+    /* 0x22C8 */ J2DTextBox* mpRubyBox;
     /* 0x22CC */ JUTFont* tFont;
     /* 0x22D0 */ JUTFont* rFont;
     /* 0x22D4 */ JKRExpHeap* exp_heap;

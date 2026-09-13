@@ -59,30 +59,30 @@ void dScnOpen_message_c::set_message(u32 param_1, int param_2) {
     strcpy(msg2, "");
     strcpy(msg3, "");
     strcpy(msg4, "");
-    J2DTextBox::TFontSize fsz; 
-    fsz.mSizeX = g_msgHIO.field_0x70;
-    fsz.mSizeY = g_msgHIO.field_0x70;
+    J2DTextBox::TFontSize fontSize;
+    fontSize.mSizeX = g_msgHIO.field_0x70;
+    fontSize.mSizeY = g_msgHIO.field_0x70;
 
-    this->field_0x22c4->setLineSpace(28.0f);
-    this->field_0x22c8->setLineSpace(28.0f);
-    this->field_0x22c4->setFontSize(fsz);
-    float rubysizex = this->field_0x22c8->mFontSizeX;
+    mpTextBox->setLineSpace(28.0f);
+    mpRubyBox->setLineSpace(28.0f);
+    mpTextBox->setFontSize(fontSize);
+    float rubysizex = mpRubyBox->mFontSizeX;
     mesg_header* head_p = msgget.getMesgHeader(this->field_0x22c0);
     JUT_ASSERT(0x5d, head_p);
     const char* msg = msgget.getMessage(head_p);
-    this->field_0x22a4 = msgget.getMesgEntry(head_p);
+    mMesgEntry = msgget.getMesgEntry(head_p);
     mMsgDataProc.dataInit();
     mMsgDataProc.setBmgData(const_cast<char*>(msg));
     mMsgDataProc.setOutMessage(msg1, msg2, msg3, msg4);
     mMsgDataProc.setFont(tFont);
     mMsgDataProc.setRubyFont(rFont);
-    mMsgDataProc.setCharSpace(this->field_0x22c4->getCharSpace());
-    mMsgDataProc.setRubyCharSpace(this->field_0x22c8->getCharSpace());
-    mMsgDataProc.setLineSpace(this->field_0x22c4->getLineSpace());
-    mMsgDataProc.setMesgEntry(&this->field_0x22a4);
-    mMsgDataProc.setFontSize(fsz.mSizeX);
+    mMsgDataProc.setCharSpace(mpTextBox->getCharSpace());
+    mMsgDataProc.setRubyCharSpace(mpRubyBox->getCharSpace());
+    mMsgDataProc.setLineSpace(mpTextBox->getLineSpace());
+    mMsgDataProc.setMesgEntry(&mMesgEntry);
+    mMsgDataProc.setFontSize(fontSize.mSizeX);
     mMsgDataProc.setRubyFontSize(rubysizex);
-    mMsgDataProc.setLineWidth(this->field_0x22c4->mBounds.getWidth());
+    mMsgDataProc.setLineWidth(mpTextBox->mBounds.getWidth());
     mMsgDataProc.setCenterLineWidth(0x1e6);
     mMsgDataProc.setSendSpeed(2);
     mMsgDataProc.setSpaceTimer(0);
@@ -90,9 +90,9 @@ void dScnOpen_message_c::set_message(u32 param_1, int param_2) {
     mMsgDataProc.stringShift();
     s16 lineCount = mMsgDataProc.lineCount;
     mMsgDataProc.lineCount = 0;
-    f32 yShift = (this->field_0x22a4.field_0x16 - (int)lineCount - 1) * (this->field_0x22c4->getLineSpace()/2.0f);
-    this->field_0x22c4->shiftSet(0.0f, yShift);
-    this->field_0x22c8->shiftSet(0.0f, yShift - 1.0f);
+    f32 yShift = (mMesgEntry.field_0x16 - (int)lineCount - 1) * (mpTextBox->getLineSpace()/2.0f);
+    mpTextBox->shiftSet(0.0f, yShift);
+    mpRubyBox->shiftSet(0.0f, yShift - 1.0f);
 
     mDoExt_setCurrentHeap(old_heap);
 }
@@ -104,9 +104,9 @@ void dScnOpen_message_c::exec() {
     if (this->field_0x22bc != 10 && this->field_0x22bc != 14) {
         mMsgDataProc.stringSet();
         this->field_0x22bc = mMsgDataProc.mesgStatus;
-        this->field_0x22c4->setString(this->msg1);
-        this->field_0x22c8->setString(this->msg2);
-        this->field_0x22c8->mVisible = false;
+        this->mpTextBox->setString(this->msg1);
+        this->mpRubyBox->setString(this->msg2);
+        this->mpRubyBox->mVisible = false;
     }
     int iVar1 = this->field_0x22e4;
     switch(iVar1) {
@@ -179,11 +179,11 @@ dScnOpen_message_c::~dScnOpen_message_c() {
 }
 
 void dScnOpen_message_c::set_pane_pointer(J2DPane* tx1, J2DPane* tx2) {
-    field_0x22c4 = (J2DTextBox*)tx1;
-    field_0x22c8 = (J2DTextBox*)tx2;
-    field_0x22c4->setFont(tFont);
-    field_0x22c8->setFont(rFont);
-    field_0x22c8->setLineSpace(field_0x22c4->getLineSpace());
+    mpTextBox = (J2DTextBox*)tx1;
+    mpRubyBox = (J2DTextBox*)tx2;
+    mpTextBox->setFont(tFont);
+    mpRubyBox->setFont(rFont);
+    mpRubyBox->setLineSpace(mpTextBox->getLineSpace());
 }
 
 enum {
